@@ -132,3 +132,19 @@ elif choice == "أكاديمية الأمن السيبراني":
     cybersecurity_academy()
 elif choice == "JobLens AI":
     joblens_ai()
+
+# ==============================
+# قسم الدردشة الذكية (يظهر دائماً)
+# ==============================
+st.divider()
+st.subheader("💬 اسأل مساعد بصيرة العمل الذكي")
+
+user_question = st.chat_input("اكتب سؤالك عن الوظيفة أو المهارات هنا...")
+
+if user_question:
+    with st.chat_message("user"):
+        st.write(user_question)
+
+    with st.chat_message("assistant"):
+        st.write("أنا هنا لمساعدتك! جاري تحليل سؤالك وربطه ببيانات سوق العمل...")
+        # لاحقاً يمكن إضافة API للذكاء الاصطناعي
