@@ -1,8 +1,0 @@
-streamlit
-openai
-pandas
-numpy
-requests
-Pillow
-langchain
-crewai
