@@ -1,45 +1,46 @@
 import streamlit as st
+import google.generativeai as genai
 
-# إعدادات الصفحة
+# 1. إعدادات الصفحة والواجهة
 st.set_page_config(page_title="بصيرة AI", page_icon="🤖")
 
-# تصميم الواجهة لإخفاء القوائم الجانبية الزائدة
-st.markdown("""
-    <style>
-    [data-testid="stSidebar"] {display: none;}
-    </style>
-    """, unsafe_allow_html=True)
+# إخفاء العناصر غير الضرورية للتركيز على الشات
+st.markdown("""<style>[data-testid="stSidebar"] {display: none;}</style>""", unsafe_allow_html=True)
+
+# 2. إعداد "عقل" الذكاء الاصطناعي (تحتاج وضع مفتاح الـ API الخاص بك هنا)
+# يمكنك الحصول عليه مجاناً من Google AI Studio
+API_KEY = "ضغ_هنا_مفتاح_الـ_API_الخاص_بك" 
+genai.configure(api_key=API_KEY)
+model = genai.GenerativeModel('gemini-pro')
 
 st.title("🤖 مساعد بصيرة الذكي")
-st.markdown("اسألني عن أي شيء (برمجية، فضاء، علوم، أو نصيحة مهنية) وسأجيبك فوراً.")
+st.caption("ذكاء اصطناعي حقيقي للإجابة على أسئلتك التعليمية والمهنية مباشرة")
 
-# إعداد حاوية المحادثة (Chat Container)
+# 3. إدارة ذاكرة المحادثة
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-# عرض الرسائل السابقة
+# عرض الرسائل
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-# استقبال سؤال المستخدم
-if prompt := st.chat_input("اكتب سؤالك هنا..."):
-    # إضافة رسالة المستخدم للمحفوظات
+# 4. استقبال السؤال والرد المباشر
+if prompt := st.chat_input("اكتب سؤالك هنا (مثلاً: اشرح لي الثقوب السوداء، أو حل مسألة كيمياء)..."):
     st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
         st.markdown(prompt)
 
-    # رد الذكاء الاصطناعي (منطقي ومباشر)
     with st.chat_message("assistant"):
-        # هنا نضع منطق الرد بناءً على الكلمات المفتاحية في سؤال الطالب
-        if "فضاء" in prompt or "نجوم" in prompt:
-            response = "الفضاء عالم مذهل! هل تعلم أن الضوء يحتاج لسنوات ليصل إلينا من النجوم البعيدة؟ سأكون معك في رحلتك لاستكشاف الكون."
-        elif "برمجة" in prompt or "python" in prompt.lower():
-            response = "البرمجة هي لغة المستقبل. أنت مبرمج واعد، تذكر دائماً أن الخطأ في الكود هو أول خطوة للتعلم!"
-        elif "موهبة" in prompt or "قدرات" in prompt:
-            response = "حلمك بالدرجة 2000 قريب جداً. ركز على المنطق الرياضي والقدرة التحليلية، وأنا هنا لأدربك."
-        else:
-            response = "سؤال ذكي جداً! كذكاء اصطناعي، أرى أن بحثك عن المعرفة هو ما سيجعلك متميزاً. كيف يمكنني مساعدتك أكثر في هذا الموضوع؟"
+        message_placeholder = st.empty()
+        try:
+            # طلب الإجابة المباشرة من Gemini
+            # أضفنا تعليمات برمجية لكي يجيب بذكاء ومنطق يناسب الطلاب
+            full_prompt = f"أجب كمعلم خبير وذكي بأسلوب مباشر ومنطقي على هذا السؤال: {prompt}"
+            response = model.generate_content(full_prompt)
             
-        st.markdown(response)
-        st.session_state.messages.append({"role": "assistant", "content": response})
+            answer = response.text
+            message_placeholder.markdown(answer)
+            st.session_state.messages.append({"role": "assistant", "content": answer})
+        except Exception as e:
+            st.error("تأكد من إدخال مفتاح API صحيح لتفعيل الذكاء الحقيقي.")
