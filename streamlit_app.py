@@ -1,68 +1,45 @@
 import streamlit as st
-import re
-from collections import Counter
 
-# 1. إعدادات الصفحة
-st.set_page_config(page_title="منصة بصيرة التعليمية", page_icon="🎓", layout="wide")
+# إعدادات الصفحة
+st.set_page_config(page_title="بصيرة AI", page_icon="🤖")
 
-# 2. محرك التحليل الأساسي (الذي اشتغلنا عليه سابقاً)
-def analyze_skills(text):
-    stop_words = {'من', 'في', 'على', 'إلى', 'مع', 'عن', 'أن', 'أو', 'تم', 'كان', 'هذا', 'هذه', 'the', 'and', 'to', 'of', 'in', 'for', 'is'}
-    text = re.sub(r'[^\w\s]', ' ', text.lower())
-    words = text.split()
-    cleaned = [w for w in words if w not in stop_words and len(w) > 2]
-    return Counter(cleaned).most_common(10)
+# تصميم الواجهة لإخفاء القوائم الجانبية الزائدة
+st.markdown("""
+    <style>
+    [data-testid="stSidebar"] {display: none;}
+    </style>
+    """, unsafe_allow_html=True)
 
-# 3. القائمة الجانبية (Sidebar) للتنقل
-st.sidebar.title("📑 أقسام المنصة")
-menu = st.sidebar.radio("اختر القسم:", [
-    "بوصلة التوظيف", 
-    "المعلم الذكي (علوم وفضاء)", 
-    "أكاديمية الموهبة والقدرات", 
-    "الأمن السيبراني والبرمجة"
-])
+st.title("🤖 مساعد بصيرة الذكي")
+st.markdown("اسألني عن أي شيء (برمجية، فضاء، علوم، أو نصيحة مهنية) وسأجيبك فوراً.")
 
-# --- القسم الأول: بوصلة التوظيف (تم تعديله كما طلبت) ---
-if menu == "بوصلة التوظيف":
-    st.title("🎯 جسر بين الدراسة وسوق العمل")
-    st.write("قم بوضع وصف الوظيفة بالأسفل لاستخراج أهم المهارات المطلوبة.")
-    
-    # الصندوق فارغ تماماً من النصوص الداخلية كما طلبت
-    job_input = st.text_area("أدخل وصف الوظيفة هنا:", height=200, placeholder="")
-    
-    if st.button("بدء التحليل"):
-        if job_input:
-            results = analyze_skills(job_input)
-            st.subheader("النتائج:")
-            for skill, count in results:
-                st.info(f"**{skill}**: تكررت {count} مرات")
+# إعداد حاوية المحادثة (Chat Container)
+if "messages" not in st.session_state:
+    st.session_state.messages = []
+
+# عرض الرسائل السابقة
+for message in st.session_state.messages:
+    with st.chat_message(message["role"]):
+        st.markdown(message["content"])
+
+# استقبال سؤال المستخدم
+if prompt := st.chat_input("اكتب سؤالك هنا..."):
+    # إضافة رسالة المستخدم للمحفوظات
+    st.session_state.messages.append({"role": "user", "content": prompt})
+    with st.chat_message("user"):
+        st.markdown(prompt)
+
+    # رد الذكاء الاصطناعي (منطقي ومباشر)
+    with st.chat_message("assistant"):
+        # هنا نضع منطق الرد بناءً على الكلمات المفتاحية في سؤال الطالب
+        if "فضاء" in prompt or "نجوم" in prompt:
+            response = "الفضاء عالم مذهل! هل تعلم أن الضوء يحتاج لسنوات ليصل إلينا من النجوم البعيدة؟ سأكون معك في رحلتك لاستكشاف الكون."
+        elif "برمجة" in prompt or "python" in prompt.lower():
+            response = "البرمجة هي لغة المستقبل. أنت مبرمج واعد، تذكر دائماً أن الخطأ في الكود هو أول خطوة للتعلم!"
+        elif "موهبة" in prompt or "قدرات" in prompt:
+            response = "حلمك بالدرجة 2000 قريب جداً. ركز على المنطق الرياضي والقدرة التحليلية، وأنا هنا لأدربك."
         else:
-            st.warning("الرجاء إدخال نص أولاً.")
-
-# --- القسم الثاني: المعلم الذكي (فيزياء، كيمياء، فضاء) ---
-elif menu == "المعلم الذكي (علوم وفضاء)":
-    st.title("🚀 المعلم الذكي")
-    st.write("تعلم الفيزياء، الكيمياء، والرياضيات بأسلوب منطقي ومبسط.")
-    subject = st.selectbox("المادة:", ["علوم الأرض والفضاء", "الفيزياء", "الكيمياء", "الرياضيات"])
-    level = st.select_slider("مواك الدراسي:", options=["ابتدائي", "متوسط", "ثانوي", "جامعي"])
-    question = st.text_input("ما هو سؤالك العلمي؟", placeholder="")
-    
-    if st.button("اشرح لي"):
-        st.success(f"أهلاً بك. سأقوم بشرح {question} بطريقة تناسب مستوى {level}...")
-
-# --- القسم الثالث: موهبة والقدرات ---
-elif menu == "أكاديمية الموهبة والقدرات":
-    st.title("🌟 طريقك نحو الدرجة 2000")
-    st.write("تدريب خاص على اختبارات موهبة، ستيب، والقدرات.")
-    exam = st.selectbox("نوع الاختبار:", ["موهبة المستوى 3", "القدرات", "التحصيلي", "STEP"])
-    
-    if st.button("تحميل الأسئلة التدريبية"):
-        st.info(f"جاري تجهيز بنك أسئلة {exam}...")
-
-# --- القسم الرابع: الأمن السيبراني ---
-elif menu == "الأمن السيبراني والبرمجة":
-    st.title("🛡️ مدرسة الأمن السيبراني")
-    st.write("تعلم البرمجة وحماية الأنظمة من الاختراق.")
-    st.radio("اختر المسار:", ["أساسيات Python", "أمن الشبكات", "التشفير"])
-    if st.button("ابدأ الدرس"):
-        st.write("استعد للمغامرة الرقمية!")
+            response = "سؤال ذكي جداً! كذكاء اصطناعي، أرى أن بحثك عن المعرفة هو ما سيجعلك متميزاً. كيف يمكنني مساعدتك أكثر في هذا الموضوع؟"
+            
+        st.markdown(response)
+        st.session_state.messages.append({"role": "assistant", "content": response})
