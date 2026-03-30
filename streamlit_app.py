@@ -1,73 +1,71 @@
 import streamlit as st
-import re
-from collections import Counter
 
-# --- 1. إعدادات الصفحة والواجهة ---
-st.set_page_config(page_title="JobLens AI | بصيرة العمل", page_icon="🚀", layout="centered")
+# إعدادات الصفحة الأساسية
+st.set_page_config(page_title="منصة بصيرة التعليمية والمهنية", layout="wide", page_icon="🎓")
 
-# --- 2. منطق تحليل البيانات ---
-class JobLensAI:
-    def __init__(self):
-        # قائمة الكلمات التي سنتجاهلها في التحليل (عربي وإنجليزي)
-        self.stop_words = {
-            'and', 'the', 'in', 'to', 'of', 'for', 'with', 'a', 'is', 'at', 'on', 
-            'requirements', 'required', 'years', 'experience', 'knowledge', 'skills', 
-            'ability', 'work', 'job', 'must', 'have', 'be', 'an', 'including', 'plus', 
-            'preferred', 'qualification', 'from', 'من', 'في', 'على', 'إلى', 'مع', 'عن', 
-            'أن', 'هل', 'أو', 'تم', 'كان', 'يكون', 'هذا', 'هذه', 'التي', 'الذي', 'متطلبات', 
-            'خبرة', 'سنوات', 'العمل', 'مهارات', 'الوظيفة', 'المطلوبة', 'يفضل', 'معرفة', 
-            'قدرة', 'مجال', 'للمرشح', 'إجادة', 'اللغة', 'تطوير'
-        }
+# تخصيص واجهة المستخدم لإزالة بعض العناصر الافتراضية
+st.markdown("""
+    <style>
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    </style>
+    """, unsafe_allow_html=True)
 
-    def clean_text(self, text):
-        # تنظيف النص وتحويله لسمات برمجية
-        text = text.lower()
-        text = re.sub(r'[^\w\s\u0600-\u06FF]', ' ', text)
-        words = text.split()
-        # إزالة "الـ" التعريفية البسيطة والكلمات غير المهمة
-        cleaned = [w[2:] if w.startswith('ال') and len(w) > 4 else w for w in words]
-        return [w for w in cleaned if w not in self.stop_words and len(w) > 2]
+# القائمة الجانبية (Sidebar) هي المحرك الأساسي للمنصة
+st.sidebar.title("💠 أقسام المنصة")
+choice = st.sidebar.radio("انتقل إلى:", 
+    ["بوصلة التوظيف والخريجين", "المعلم الذكي (علوم وفضاء)", "أكاديمية الموهبة والقدرات", "بوابة الأمن السيبراني"])
 
-    def analyze(self, job_description, top_n=10):
-        return Counter(self.clean_text(job_description)).most_common(top_n)
-
-# --- 3. تصميم واجهة المستخدم ---
-st.title("🚀 JobLens AI | بصيرة العمل")
-st.markdown("### جسر بين الدراسة وسوق العمل")
-st.info("قم بلصق وصف الوظيفة بالأسفل لاستخراج أهم المهارات المطلوبة.")
-
-# مدخلات وصف الوظيفة
-job_input = st.text_area("أدخل وصف الوظيفة هنا:", height=200, placeholder="مثال: مطلوب مبرمج بايثون لديه خبرة في تطوير المواقع...")
-
-if st.button("بدء التحليل"):
-    if job_input:
-        analyzer = JobLensAI()
-        results = analyzer.analyze(job_input)
-        st.write("### 📊 أهم المهارات المستخرجة:")
-        
-        # عرض النتائج بشكل أنيق
-        cols = st.columns(2)
-        for i, (skill, count) in enumerate(results):
-            with cols[i % 2]:
-                st.success(f"**{skill}** (تكررت {count} مرات)")
-    else:
-        st.warning("⚠️ فضلاً، أدخل وصف الوظيفة أولاً للبدء.")
-
-# --- 4. إضافة قسم الدردشة الذكية (إضافتك المميزة) ---
-st.divider() # خط فاصل مرئي
-st.subheader("💬 اسأل مساعد بصيرة العمل الذكي")
-st.caption("أنا هنا لمساعدتك في فهم متطلبات السوق وتقديم نصائح مهنية.")
-
-# لوحة الكتابة (Chat Input)
-user_question = st.chat_input("اكتب سؤالك عن الوظيفة أو المهارات هنا...")
-
-if user_question:
-    # عرض سؤال المستخدم
-    with st.chat_message("user"):
-        st.write(user_question)
+# --- القسم الأول: بوصلة التوظيف ---
+if choice == "بوصلة التوظيف والخريجين":
+    st.title("🎯 بوصلة التوظيف")
+    st.subheader("تحليل بيانات الخريجين وسوق العمل")
     
-    # استجابة المساعد (أنا)
-    with st.chat_message("assistant"):
-        st.write("أنا هنا لمساعدتك! بصفتي مساعدك الذكي في **بصيرة العمل**، جاري تحليل سؤالك بعمق وربطه ببيانات سوق العمل...")
-        # ملاحظة للمنفذ البطل: في التحديث القادم سنقوم بربط الـ API هنا لجعله يرد فعلياً
-        st.write("نصيحة سريعة: المهارات التقنية مهمة، لكن لا تنسَ المهارات الناعمة (Soft Skills) مثل التواصل وحل المشكلات!")
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        specialty = st.text_input("التخصص الجامعي:")
+    with col2:
+        country = st.text_input("الدولة / المدينة:")
+    with col3:
+        job_title = st.text_input("الوظيفة المستهدفة:")
+    
+    # صندوق الوصف الوظيفي (تمت إزالة النص التوضيحي بداخل الصندوق)
+    job_description = st.text_area("أدخل وصف الوظيفة أو المهارات هنا:", height=200, placeholder="")
+    
+    if st.button("بدء التحليل الذكي"):
+        if job_description:
+            st.success(f"تم استقبال البيانات لـ {specialty} في {country}. جاري تحليل المهارات...")
+        else:
+            st.warning("الرجاء إدخال بيانات للتحليل.")
+
+# --- القسم الثاني: المعلم الذكي ---
+elif choice == "المعلم الذكي (علوم وفضاء)":
+    st.title("🚀 المعلم الذكي")
+    st.info("مساعدك في الفيزياء، الكيمياء، الرياضيات، وعلوم الفضاء.")
+    
+    subject = st.selectbox("المادة العلمية:", ["الفيزياء والكون", "الكيمياء المتقدمة", "الرياضيات والهندسة", "علوم الأرض والفضاء"])
+    grade = st.select_slider("المرحلة الدراسية:", options=["ابتدائي", "متوسط", "ثانوي", "جامعي"])
+    
+    question = st.text_input("اسألني أي سؤال علمي هنا:", placeholder="")
+    
+    if st.button("اشرح لي بذكاء"):
+        st.write(f"### الإجابة المنطقية (مستوى {grade}):")
+        st.write("هنا سيظهر الشرح العلمي المبسط والدقيق بناءً على مستواك الدراسي...")
+
+# --- القسم الثالث: الموهبة والقدرات ---
+elif choice == "أكاديمية الموهبة والقدرات":
+    st.title("🌟 استعداد للتميز")
+    st.write("تدريب مكثف لاجتياز اختبارات (موهبة، ستيب، القدرات، والتحصيلي).")
+    test_type = st.selectbox("اختر الاختبار:", ["موهبة المستوى 3", "القدرات العامة", "التحصيلي العلمي", "STEP"])
+    
+    if st.button("ابدأ التدريب"):
+        st.info(f"جاري تحضير أسئلة محاكية لاختبار {test_type}...")
+
+# --- القسم الرابع: الأمن السيبراني ---
+elif choice == "بوابة الأمن السيبراني":
+    st.title("🛡️ بوابة الحماية الرقمية")
+    st.write("تعلم أسس الأمن السيبراني وحماية البيانات للمبرمجين.")
+    cyber_level = st.radio("مستوى التعلم:", ["مبتدئ (أساسيات)", "متوسط (ثغرات)", "متقدم (تشفير)"])
+    
+    if st.button("فتح الدرس الأول"):
+        st.success("أهلاً بك في عالم الهاكر الأخلاقي. لنبدأ بأساسيات التشفير...")
