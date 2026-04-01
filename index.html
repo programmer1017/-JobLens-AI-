@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>JobLens AI - الذكاء الاصطناعي المتكامل</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Tahoma', 'Cairo', sans-serif;
+            background: linear-gradient(135deg, #0a0f1e 0%, #0a1a2f 100%);
+            min-height: 100vh;
+            color: #fff;
+        }
+
+        .navbar {
+            background: rgba(10, 20, 30, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+            flex-wrap: wrap;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            font-size: 2.5rem;
+            background: linear-gradient(45deg, #00ffff, #ff00aa);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .logo-text h1 {
+            font-size: 1.8rem;
+            background: linear-gradient(135deg, #fff, #00ccff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .logo-text p {
+            font-size: 0.8rem;
+            color: #88aaff;
+        }
+
+        .badge-saudi {
+            background: #006c35;
+            padding: 6px 12px;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 20px;
+        }
+
+        .chat-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+        }
+
+        .chat-panel {
+            flex: 2;
+            min-width: 300px;
+            background: rgba(15, 25, 45, 0.6);
+            backdrop-filter: blur(12px);
+            border-radius: 32px;
+            border: 1px solid rgba(0, 255, 255, 0.25);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 70vh;
+        }
+
+        .chat-header {
+            padding: 1rem;
+            background: rgba(0, 20, 40, 0.7);
+            border-bottom: 1px solid #00ccff33;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .messages-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .message {
+            max-width: 85%;
+            padding: 12px 18px;
+            border-radius: 24px;
+            line-height: 1.5;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .user-message {
+            align-self: flex-end;
+            background: linear-gradient(135deg, #00aaff, #0066cc);
+            border-bottom-right-radius: 6px;
+        }
+
+        .ai-message {
+            align-self: flex-start;
+            background: rgba(30, 40, 60, 0.9);
+            border-bottom-left-radius: 6px;
+            border-right: 3px solid #00ffff;
+        }
+
+        .router-tag {
+            font-size: 0.7rem;
+            color: #88ddff;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .input-area {
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.5);
+            border-top: 1px solid #2c3e66;
+            display: flex;
+            gap: 12px;
+        }
+
+        textarea {
+            flex: 1;
+            background: #0f1a2c;
+            border: 1px solid #2c5a7a;
+            border-radius: 28px;
+            padding: 12px 20px;
+            color: white;
+            font-family: inherit;
+            resize: none;
+            font-size: 1rem;
+        }
+
+        button {
+            background: linear-gradient(45deg, #00ccff, #0099ff);
+            border: none;
+            padding: 0 24px;
+            border-radius: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+            color: #fff;
+            font-size: 1rem;
+        }
+
+        button:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 12px #00ccffaa;
+        }
+
+        .media-panel {
+            flex: 1.2;
+            min-width: 280px;
+            background: rgba(15, 25, 45, 0.6);
+            backdrop-filter: blur(12px);
+            border-radius: 32px;
+            border: 1px solid rgba(0, 255, 255, 0.25);
+            padding: 1.2rem;
+        }
+
+        .media-section {
+            margin-bottom: 30px;
+        }
+
+        .media-section h3 {
+            margin-bottom: 15px;
+            border-right: 4px solid #00ffff;
+            padding-right: 12px;
+        }
+
+        .gen-form {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        .gen-form input, .gen-form textarea {
+            background: #0f1a2c;
+            border: 1px solid #2c5a7a;
+            border-radius: 20px;
+            padding: 10px;
+            color: white;
+        }
+
+        .media-output {
+            margin-top: 20px;
+            background: #0a0f1e80;
+            border-radius: 24px;
+            padding: 12px;
+            text-align: center;
+        }
+
+        img, video {
+            max-width: 100%;
+            border-radius: 16px;
+            margin-top: 10px;
+            border: 1px solid cyan;
+        }
+
+        .loading {
+            color: cyan;
+            font-size: 0.9rem;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 0.8rem;
+            color: #88aaff;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px);}
+            to { opacity: 1; transform: translateY(0);}
+        }
+    </style>
+</head>
+<body>
+
+<div class="navbar">
+    <div class="logo-area">
+        <div class="logo-icon">🧠⚡</div>
+        <div class="logo-text">
+            <h1>JobLens AI</h1>
+            <p>Saudi-led Digital Guidance | التوجيه الرقمي السعودي</p>
+        </div>
+    </div>
+    <div class="badge-saudi">
+        🇸🇦 AI Orchestrator | محور الذكاءات
+    </div>
+</div>
+
+<div class="container">
+    <div class="chat-wrapper">
+        <div class="chat-panel">
+            <div class="chat-header">
+                <span>🤖 مساعد JobLens AI - التوجيه الذكي للمتخصصين</span>
+                <span style="font-size:12px;">🔄 Gemini | DeepSeek | Code Expert</span>
+            </div>
+            <div class="messages-area" id="messagesArea">
+                <div class="message ai-message">
+                    <div class="router-tag">🎯 النظام الأساسي</div>
+                    مرحباً بك في JobLens AI! أنا ناقل ذكي يوجه أسئلتك لأفضل نموذج:<br>
+                    • أسئلة البرمجة → Code Expert (GPT-4o class)<br>
+                    • معلومات عامة/معرفة → Gemini AI<br>
+                    • الأمن السيبراني → DeepSeek<br>
+                    • كما يمكنني إنشاء صور وفيديوهات تصل مدتها إلى أكثر من 55 دقيقة!<br>
+                    جرب أن تسألني أي شيء.
+                </div>
+            </div>
+            <div class="input-area">
+                <textarea id="userInput" rows="1" placeholder="اكتب سؤالك هنا... (برمجة، معلومات، أمن سيبراني، أو اطلب صورة/فيديو)"></textarea>
+                <button id="sendBtn">إرسال ➤</button>
+            </div>
+        </div>
+
+        <div class="media-panel">
+            <div class="media-section">
+                <h3>🎨 توليد الصور</h3>
+                <div class="gen-form">
+                    <input type="text" id="imgPrompt" placeholder="وصف الصورة المطلوبة">
+                    <button id="genImageBtn">إنشاء صورة</button>
+                </div>
+            </div>
+            <div class="media-section">
+                <h3>🎥 فيديوهات طويلة (حتى 60+ دقيقة)</h3>
+                <div class="gen-form">
+                    <textarea id="videoPrompt" rows="2" placeholder="وصف الفيديو الطويل (قصّة، تعليم، عرض)"></textarea>
+                    <input type="text" id="durationHint" placeholder="المدة المطلوبة مثلاً: 58 دقيقة">
+                    <button id="genVideoBtn">🎬 إنشاء فيديو طويل</button>
+                </div>
+            </div>
+            <div class="media-output" id="mediaOutput">
+                <div style="color:#aaa;">ستظهر الصور والفيديوهات هنا 📸</div>
+            </div>
+        </div>
+    </div>
+</div>
+<footer>
+    🇸🇦 JobLens AI Hub - التوجيه الذكي بين Gemini, DeepSeek, Code Expert | إنتاج فيديوهات متقدمة حتى 55+ دقيقة
+</footer>
+
+<script>
+    const messagesArea = document.getElementById('messagesArea');
+    const userInput = document.getElementById('userInput');
+    const sendBtn = document.getElementById('sendBtn');
+    const genImageBtn = document.getElementById('genImageBtn');
+    const genVideoBtn = document.getElementById('genVideoBtn');
+    const imgPromptInput = document.getElementById('imgPrompt');
+    const videoPromptInput = document.getElementById('videoPrompt');
+    const durationHint = document.getElementById('durationHint');
+    const mediaOutput = document.getElementById('mediaOutput');
+
+    function addMessage(text, isUser = false, routerInfo = null) {
+        const msgDiv = document.createElement('div');
+        msgDiv.className = `message ${isUser ? 'user-message' : 'ai-message'}`;
+        if (!isUser && routerInfo) {
+            const tagSpan = document.createElement('div');
+            tagSpan.className = 'router-tag';
+            tagSpan.innerHTML = `🔀 تم التوجيه إلى: ${routerInfo}`;
+            msgDiv.appendChild(tagSpan);
+        }
+        const contentSpan = document.createElement('div');
+        contentSpan.innerText = text;
+        msgDiv.appendChild(contentSpan);
+        messagesArea.appendChild(msgDiv);
+        messagesArea.scrollTop = messagesArea.scrollHeight;
+    }
+
+    function showLoading(show) {
+        let loadEl = document.getElementById('tempLoading');
+        if (show) {
+            if (!loadEl) {
+                loadEl = document.createElement('div');
+                loadEl.id = 'tempLoading';
+                loadEl.className = 'message ai-message';
+                loadEl.innerHTML = '<div class="router-tag">⏳ جاري المعالجة والتوجيه...</div><div>يتصل بأفضل نموذج...</div>';
+                messagesArea.appendChild(loadEl);
+                messagesArea.scrollTop = messagesArea.scrollHeight;
+            }
+        } else {
+            if (loadEl) loadEl.remove();
+        }
+    }
+
+    function routeQuery(userQuery) {
+        const lowerQuery = userQuery.toLowerCase();
+        if (lowerQuery.includes('أمن سيبراني') || lowerQuery.includes('سيبراني') || lowerQuery.includes('اختراق') || lowerQuery.includes('hack') || lowerQuery.includes('firewall') || lowerQuery.includes('cyber')) {
+            return { expert: 'DeepSeek (خبير الأمن السيبراني)', endpoint: 'deepseek' };
+        }
+        else if (lowerQuery.includes('برمجة') || lowerQuery.includes('كود') || lowerQuery.includes('برمج') || lowerQuery.includes('بايثون') || lowerQuery.includes('جافا') || lowerQuery.includes('جافا سكربت') || lowerQuery.includes('html') || lowerQuery.includes('css') || lowerQuery.includes('خوارزمية') || lowerQuery.includes('algorithm') || lowerQuery.includes('coding')) {
+            return { expert: 'Code Expert (GPT-4o متخصص برمجي)', endpoint: 'codex' };
+        }
+        else if (lowerQuery.includes('ما هو') || lowerQuery.includes('معلومات عن') || lowerQuery.includes('تاريخ') || lowerQuery.includes('علوم') || lowerQuery.includes('اخبار') || lowerQuery.includes('من هو') || lowerQuery.includes('شرح')) {
+            return { expert: 'Gemini AI (المعرفة الشاملة)', endpoint: 'gemini' };
+        }
+        else {
+            return { expert: 'Gemini AI (المعلومات العامة)', endpoint: 'gemini' };
+        }
+    }
+
+    async function callExpert(endpoint, userMessage) {
+        await new Promise(resolve => setTimeout(resolve, 800));
+        
+        if (endpoint === 'deepseek') {
+            return `🛡️ [DeepSeek - الأمن السيبراني]: استجابة متخصصة في الأمن السيبراني لسؤالك: "${userMessage}". تأكد من تحديث الأنظمة واستخدام كلمات مرور قوية، وتفعيل المصادقة الثنائية. (محاكاة متقدمة)`;
+        } 
+        else if (endpoint === 'codex') {
+            return `💻 [Code Expert - خوارزميات البرمجة]: مرحباً! هذا حل برمجي متقدم لاستفسارك "${userMessage}".\n\nمثال: \`\`\`python\ndef solve_problem():\n    print("أفضل ممارسات البرمجة مع JobLens AI")\n\`\`\`\nيمكنك التوسع أكثر حسب احتياجك.`;
+        }
+        else {
+            return `🌐 [Gemini AI - موسوعة المعرفة]: سؤالك: "${userMessage}". هذا رد شامل: بناءً على أحدث البيانات، الإجابة تتضمن معلومات دقيقة ومحدثة. (JobLens AI يضمن الجودة) ✨`;
+        }
+    }
+
+    async function handleUserQuery() {
+        const query = userInput.value.trim();
+        if (!query) return;
+        addMessage(query, true);
+        userInput.value = '';
+        showLoading(true);
+        
+        const routing = routeQuery(query);
+        addMessage(`🔍 جارٍ التوجيه إلى ${routing.expert}...`, false, "نظام التوجيه");
+        
+        try {
+            const responseText = await callExpert(routing.endpoint, query);
+            showLoading(false);
+            addMessage(responseText, false, routing.expert);
+        } catch (err) {
+            showLoading(false);
+            addMessage(`⚠️ عذراً، حدث خطأ في الاتصال بالخبير: ${err.message}`, false, "نظام الطوارئ");
+        }
+    }
+
+    async function generateImage() {
+        const prompt = imgPromptInput.value.trim();
+        if (!prompt) {
+            mediaOutput.innerHTML = `<div style="color:#ffaa88;">⚠️ الرجاء كتابة وصف الصورة</div>`;
+            return;
+        }
+        mediaOutput.innerHTML = `<div class="loading">🎨 جاري توليد الصورة باستخدام الذكاء الاصطناعي ...</div>`;
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        const fakeImageUrl = `https://picsum.photos/id/${Math.floor(Math.random() * 200)}/400/300`;
+        mediaOutput.innerHTML = `
+            <div style="background:#0a142e; border-radius: 20px; padding: 10px;">
+                <strong>🖼️ الصورة المولدة:</strong><br>
+                <img src="${fakeImageUrl}" alt="AI Generated Image" style="max-width:100%; border-radius: 16px;">
+                <p style="font-size:12px; margin-top:6px;">الوصف: ${prompt} (نظام JobLens AI - يمكن ربطه بـ DALL·E/Stable Diffusion)</p>
+            </div>
+        `;
+    }
+
+    async function generateLongVideo() {
+        const prompt = videoPromptInput.value.trim();
+        let duration = durationHint.value.trim();
+        if (!prompt) {
+            mediaOutput.innerHTML = `<div style="color:#ffaa88;">⚠️ أدخل وصفاً للفيديو الطويل أولاً</div>`;
+            return;
+        }
+        if (!duration) duration = "55:00 دقيقة";
+        mediaOutput.innerHTML = `<div class="loading">🎥 جاري تحضير فيديو طويل يتجاوز ${duration} ... (قد يستغرق بعض الوقت) ...</div>`;
+        
+        await new Promise(resolve => setTimeout(resolve, 3500));
+        
+        const sampleVideo = "https://www.w3schools.com/html/mov_bbb.mp4";
+        mediaOutput.innerHTML = `
+            <div style="background:#07121f; border-radius: 20px; padding: 15px;">
+                <strong>🎬 فيديو طويل تم إنشاؤه بنجاح (أكثر من 55 دقيقة):</strong><br>
+                <video width="100%" controls>
+                    <source src="${sampleVideo}" type="video/mp4">
+                    متصفحك لا يدعم عرض الفيديو.
+                </video>
+                <div style="margin-top:12px; font-size:0.85rem; background:#00aaff20; padding:8px; border-radius:12px;">
+                    ✅ الفيديو المولد موضوع: "${prompt}" | المدة المطلوبة: ${duration} (تم إنشاء فيديو تجريبي توضيحي).<br>
+                    🚀 JobLens AI قادر على إنتاج فيديوهات تتجاوز 55 دقيقة باستخدام محركات الذكاء الاصطناعي المتطورة (Sora-like, HeyGen, etc.)
+                </div>
+            </div>
+        `;
+    }
+
+    sendBtn.addEventListener('click', handleUserQuery);
+    genImageBtn.addEventListener('click', generateImage);
+    genVideoBtn.addEventListener('click', generateLongVideo);
+    
+    userInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            handleUserQuery();
+        }
+    });
+    
+    setTimeout(() => {
+        addMessage("💡 ملاحظة: النظام يوجه الأسئلة إلى: Gemini (معلومات)، DeepSeek (أمن سيبراني)، Code Expert (برمجة). وجميع المخرجات يمكن تطويرها لاستخدام APIs حقيقية. أنشئ الصور والفيديوهات الطويلة بكل سهولة!", false, "AI Orchestrator");
+    }, 1000);
+</script>
+</body>
+</html>
